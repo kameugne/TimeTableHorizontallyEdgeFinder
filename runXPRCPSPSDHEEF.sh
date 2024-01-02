@@ -15,6 +15,6 @@ do
   for search in "${SEARCHConfig[@]}"
   do
     # extract the instances from the data folder and run the solver
-    find Data/BL/ -type f | parallel $launch_solver {} $prop $search $timeout >> $resultFile
+    find Data/ -type f | parallel $launch_solver {} $prop $search $timeout >> $resultFile
   done
 done
