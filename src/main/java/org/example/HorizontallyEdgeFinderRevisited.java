@@ -237,14 +237,20 @@ public class HorizontallyEdgeFinderRevisited {
         t.slackOver = slackOver;
         t.avail = avail;
         Timepoint best = null;
-        while(t.previous != null){
-            if(t.contact != null && best == null)
-                best = t.contact;
-            if(t.contact != null && t.previous.contact == null)
-                t.previous.contact = t.contact;
-            if(t.previous.contact != null && best != null){
-                if(best.overlap - t.previous.overlap < best.slackUnder - t.previous.slackUnder)
-                    t.previous.contact = best;
+        while (t != null) {
+            if (best == null) {
+                if (t.contact != null)
+                    best = t.contact;
+            } else {
+                if (t.contact == null)
+                    t.contact = best;
+                else {
+                    if (best.overlap - t.contact.overlap <= best.slackUnder - t.contact.slackUnder) {
+                        t.contact = best;
+                    } else {
+                        best = t;
+                    }
+                }
             }
             t = t.previous;
         }

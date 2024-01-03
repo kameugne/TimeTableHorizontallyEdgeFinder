@@ -22,6 +22,7 @@ public class RunRCPSP {
     private static final int QHEEF = 4;
     private static final int IQHEEF = 5;
     private static final int IPQHEEF = 6;
+    private static final int TTHEEF = 7;
     // search strategy used
     private static final int staticSearch = 0;
     private static final int dynamicSearchCOSDOWS = 1;
@@ -174,7 +175,7 @@ public class RunRCPSP {
                         model.post(horizontallyEdgefinding);
                         break;
                     case QHEEF:
-                        Constraint qHorizontallyEdgefinding = new Constraint("improvement Slack density horizontally elastic edge finding algorithm",
+                        Constraint qHorizontallyEdgefinding = new Constraint("new horizontally elastic edge finding algorithm",
                                 propagators[i] = new HorizontallyElasticEdgeFinderConstraint(
                                         filtered_startingTimes_makespan,
                                         filtered_endingTimes,
@@ -184,7 +185,7 @@ public class RunRCPSP {
                         model.post(qHorizontallyEdgefinding);
                         break;
                     case IQHEEF:
-                        Constraint improvQhorizontallyEdgefinding = new Constraint("improvement Slack density horizontally elastic edge finding algorithm",
+                        Constraint improvQhorizontallyEdgefinding = new Constraint("improvement new horizontally elastic edge finding algorithm",
                                 propagators[i] = new ImprovedHorizontallyElasticEdgeFinderConstraint(
                                         filtered_startingTimes_makespan,
                                         filtered_endingTimes,
@@ -194,7 +195,7 @@ public class RunRCPSP {
                         model.post(improvQhorizontallyEdgefinding);
                         break;
                     case IPQHEEF:
-                        Constraint improvPrecompQhorizontallyEdgefinding = new Constraint("improvement Slack density horizontally elastic edge finding algorithm",
+                        Constraint improvPrecompQhorizontallyEdgefinding = new Constraint("improvement new horizontally elastic edge finding algorithm with precomputation",
                                 propagators[i] = new ImprovedPrecomputationHorizontallyElasticEdgeFinderConstraint(
                                         filtered_startingTimes_makespan,
                                         filtered_endingTimes,
@@ -202,6 +203,16 @@ public class RunRCPSP {
                                         filtered_processingTimes,
                                         data.capacities[i]));
                         model.post(improvPrecompQhorizontallyEdgefinding);
+                        break;
+                    case TTHEEF:
+                        Constraint tthorizontallyEdgefinding = new Constraint("timetable horizontally elastic edge finding algorithm",
+                                propagators[i] = new TimeTableHorizontallyElasticEdgeFinderConstraint(
+                                        filtered_startingTimes_makespan,
+                                        filtered_endingTimes,
+                                        filtered_heights,
+                                        filtered_processingTimes,
+                                        data.capacities[i]));
+                        model.post(tthorizontallyEdgefinding);
                         break;
                     default:
                         model.cumulative(filtered_tasks, filtered_heights_var, model.intVar("capacity", data.capacities[i]), false, Cumulative.Filter.TIME).post();
