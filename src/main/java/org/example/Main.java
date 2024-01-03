@@ -2,8 +2,8 @@ package org.example;
 
 public class Main {
     /*public static void main(String[] args) throws Exception {
-        for (int i = 9; i <= 9; i++) {
-            for (int k = 0; k < 7; k++) {
+        for (int i = 1; i <= 20; i++) {
+            for (int k = 6; k < 8; k++) {
                 RunRCPSP sample = new RunRCPSP("Data/BL/bl20_" + i + ".rcp", k, 0, 100);
                 System.out.println(sample.AllResults());
             }

@@ -1,7 +1,7 @@
 
-declare -a PROPConfig=("0" "1" "2" "3" "4" "5" "6")
+declare -a PROPConfig=("0" "1" "2" "3" "4" "5" "6" "7")
 declare -a SEARCHConfig=("0" "1" "2" "3")
-timeout=900
+timeout=1
 problem="rcpsp"  # TODO change the name of the problem
 # TODO put the path / command to launch the executable
 javaPath="/Library/Java/JavaVirtualMachines/jdk-17.0.2.jdk/Contents/Home/bin/java"
