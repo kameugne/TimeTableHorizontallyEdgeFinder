@@ -43,6 +43,8 @@ public class TimeTableEdgeFinder {
 
     public boolean OverloadCheck()
     {
+        InitializeIncrements(tasks.length - 1);
+        makespan = ScheduleTasks(tasks[tasks_indices_lct[tasks.length - 1]].latestCompletionTime());
         ttTaskAttribute[] tt = new ttTaskAttribute[tasks.length];
         for (int i = tasks.length-1; i >= 0; i--) {
             int est = tasks[tasks_indices_est[i]].earliestStartingTime();
@@ -233,7 +235,7 @@ public class TimeTableEdgeFinder {
                         }
                         reserve = C * (tasks[b].latestCompletionTime() - tasks[a].earliestStartingTime()) - eef - (ttAfterEst[tasks[a].id()] - ttAfterLct[tasks[b].id()]);
                         if (reserve < 0)
-                            return null;//defaultEstPrime;
+                            return null;
                         if (maxi != -1) {
                             int addEn = Math.min(tt[maxi].efree, tasks[maxi].height() * (tasks[b].latestCompletionTime() - tasks[maxi].earliestStartingTime())) ;
                             if (reserve < addEn) {
@@ -251,7 +253,7 @@ public class TimeTableEdgeFinder {
                         if (tasks[a].latestCompletionTime() <= tasks[b].latestCompletionTime()) {
                             reserve = C * (tasks[b].latestCompletionTime() - tasks[a].earliestStartingTime()) - eef - (ttAfterEst[tasks[a].id()] - ttAfterLct[tasks[b].id()]);
                             if (reserve < 0)
-                                return null;//defaultEstPrime;
+                                return null;
                             if(maxi != -1 && reserve < tasks[maxi].height() * (tasks[b].latestCompletionTime() - tasks[a].earliestStartingTime())) {
                                 int est = tasks[b].latestCompletionTime() - MandatoryIn(tasks[a].earliestStartingTime(),tasks[b].latestCompletionTime(),maxi) - MaxAddIn(reserve, tasks[maxi].height());
                                 estPrime[maxi] = Math.max(estPrime[maxi], est);
@@ -289,7 +291,7 @@ public class TimeTableEdgeFinder {
                             }
                             reserve = C * (tasks[b].latestCompletionTime() - tasks[a].earliestStartingTime()) - eef - (ttAfterEst[tasks[a].id()] - ttAfterLct[tasks[b].id()]);
                             if (reserve < 0)
-                                return null;//defaultEstPrime;
+                                return null;
                             if (maxi != -1 && reserve < tasks[maxi].height() * (tt[maxi].est + tt[maxi].pfree - tasks[a].earliestStartingTime())) {
                                 int est = tasks[b].latestCompletionTime() - MandatoryIn(tasks[a].earliestStartingTime(), tasks[b].latestCompletionTime(),maxi) - MaxAddIn(reserve, tasks[maxi].height());
                                 estPrime[maxi] = Math.max(estPrime[maxi] , est);

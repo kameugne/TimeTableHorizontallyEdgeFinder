@@ -3,7 +3,7 @@ package org.example;
 public class Main {
     /*public static void main(String[] args) throws Exception {
         for (int i = 1; i <= 20; i++) {
-            for (int k = 6; k < 8; k++) {
+            for (int k = 8; k < 11; k++) {
                 RunRCPSP sample = new RunRCPSP("Data/BL/bl20_" + i + ".rcp", k, 0, 100);
                 System.out.println(sample.AllResults());
             }
@@ -19,6 +19,5 @@ public class Main {
         final int timelimite = Integer.parseInt(args[3]);
         RunRCPSP sample = new RunRCPSP(filename, prop, search, timelimite);
         System.out.println(sample.AllResults());
-
     }
 }

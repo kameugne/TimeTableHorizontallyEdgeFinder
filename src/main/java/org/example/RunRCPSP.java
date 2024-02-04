@@ -15,14 +15,19 @@ import java.util.Arrays;
 
 public class RunRCPSP {
     // propagator used
-    private static final int GQHEEF = 0;
-    private static final int FTHEEF = 1;
-    private static final int TTEF = 2;
-    private static final int SDHEEF = 3;
-    private static final int QHEEF = 4;
+    private static final int FTHEEF = 0;
+    private static final int TTEF = 1;
+    private static final int SDHEEF = 2;
+    private static final int QHEEF = 3;
+
+    private static final int ISDHEEF = 4;
     private static final int IQHEEF = 5;
-    private static final int IPQHEEF = 6;
-    private static final int TTHEEF = 7;
+    private static final int TTHEEF = 6;
+
+    private static final int HEOC = 7;
+    private static final int TTOC = 8;
+    private static final int TTHEOC = 9;
+
     // search strategy used
     private static final int staticSearch = 0;
     private static final int dynamicSearchCOSDOWS = 1;
@@ -134,15 +139,15 @@ public class RunRCPSP {
 
                 // switch to differents propagators
                 switch(propagator){
-                    case GQHEEF:
-                        Constraint gingrasQuimperEF = new Constraint("Gingras and Quimper Horizontally elastic Edge Finder",
-                                propagators[i] = new EdgeFinderConstraint(
+                    case FTHEEF:
+                        Constraint fetgoTayouEF = new Constraint("Fetgo and Tayou Horizontally elastic Edge Finder",
+                                propagators[i] = new FTHorizontallyEdgeFinderRevisitedConstraint(
                                         filtered_startingTimes_makespan,
                                         filtered_endingTimes,
                                         filtered_heights,
                                         filtered_processingTimes,
                                         data.capacities[i]));
-                        model.post(gingrasQuimperEF);
+                        model.post(fetgoTayouEF);
                         break;
                     case TTEF:
                         Constraint timetableEdgefinding = new Constraint("timetable edge finding algorithm",
@@ -154,55 +159,45 @@ public class RunRCPSP {
                                         data.capacities[i]));
                         model.post(timetableEdgefinding);
                         break;
-                    case FTHEEF:
-                        Constraint horizontallyEdgefindingRevisited = new Constraint("Fetgo and Tayou horizontally elastic edge finding revisted",
-                                propagators[i] = new HorizontallyEdgeFinderRevisitedConstraint(
-                                        filtered_startingTimes_makespan,
-                                        filtered_endingTimes,
-                                        filtered_heights,
-                                        filtered_processingTimes,
-                                        data.capacities[i]));
-                        model.post(horizontallyEdgefindingRevisited);
-                        break;
                     case SDHEEF:
-                        Constraint horizontallyEdgefinding = new Constraint("Slack density horizontally elastic edge finding algorithm",
+                        Constraint slackDensityEdgefinding = new Constraint("Slack density horizontally elastic edge finding",
                                 propagators[i] = new SlackDensityHorizontallyElasticEdgeFinderConstraint(
                                         filtered_startingTimes_makespan,
                                         filtered_endingTimes,
                                         filtered_heights,
                                         filtered_processingTimes,
                                         data.capacities[i]));
-                        model.post(horizontallyEdgefinding);
+                        model.post(slackDensityEdgefinding);
                         break;
                     case QHEEF:
-                        Constraint qHorizontallyEdgefinding = new Constraint("new horizontally elastic edge finding algorithm",
-                                propagators[i] = new HorizontallyElasticEdgeFinderConstraint(
+                        Constraint quadEdgefinding = new Constraint("Quadratic horizontally elastic edge finding algorithm",
+                                propagators[i] = new QuadHorizontallyElasticEdgeFinderConstraint(
                                         filtered_startingTimes_makespan,
                                         filtered_endingTimes,
                                         filtered_heights,
                                         filtered_processingTimes,
                                         data.capacities[i]));
-                        model.post(qHorizontallyEdgefinding);
+                        model.post(quadEdgefinding);
+                        break;
+                    case ISDHEEF:
+                        Constraint improvSlackDensityEdgefinding = new Constraint("improvement new horizontally elastic edge finding algorithm",
+                                propagators[i] = new ImprovedSlackDensityHorizontallyElasticEdgeFinderConstraint(
+                                        filtered_startingTimes_makespan,
+                                        filtered_endingTimes,
+                                        filtered_heights,
+                                        filtered_processingTimes,
+                                        data.capacities[i]));
+                        model.post(improvSlackDensityEdgefinding);
                         break;
                     case IQHEEF:
-                        Constraint improvQhorizontallyEdgefinding = new Constraint("improvement new horizontally elastic edge finding algorithm",
-                                propagators[i] = new ImprovedHorizontallyElasticEdgeFinderConstraint(
+                        Constraint improvQuadhorizontallyEdgefinding = new Constraint("improvement new horizontally elastic edge finding algorithm with precomputation",
+                                propagators[i] = new ImprovedQuadHorizontallyElasticEdgeFinderConstraint(
                                         filtered_startingTimes_makespan,
                                         filtered_endingTimes,
                                         filtered_heights,
                                         filtered_processingTimes,
                                         data.capacities[i]));
-                        model.post(improvQhorizontallyEdgefinding);
-                        break;
-                    case IPQHEEF:
-                        Constraint improvPrecompQhorizontallyEdgefinding = new Constraint("improvement new horizontally elastic edge finding algorithm with precomputation",
-                                propagators[i] = new ImprovedPrecomputationHorizontallyElasticEdgeFinderConstraint(
-                                        filtered_startingTimes_makespan,
-                                        filtered_endingTimes,
-                                        filtered_heights,
-                                        filtered_processingTimes,
-                                        data.capacities[i]));
-                        model.post(improvPrecompQhorizontallyEdgefinding);
+                        model.post(improvQuadhorizontallyEdgefinding);
                         break;
                     case TTHEEF:
                         Constraint tthorizontallyEdgefinding = new Constraint("timetable horizontally elastic edge finding algorithm",
@@ -213,6 +208,36 @@ public class RunRCPSP {
                                         filtered_processingTimes,
                                         data.capacities[i]));
                         model.post(tthorizontallyEdgefinding);
+                        break;
+                    case HEOC:
+                        Constraint heOverloadCheck = new Constraint("horizontally elastic overload checker algorithm",
+                                propagators[i] = new HorizontallyOverloadCheckConstraint(
+                                        filtered_startingTimes_makespan,
+                                        filtered_endingTimes,
+                                        filtered_heights,
+                                        filtered_processingTimes,
+                                        data.capacities[i]));
+                        model.post(heOverloadCheck);
+                        break;
+                    case TTOC:
+                        Constraint ttOverloadCheck = new Constraint("timetable overload checker algorithm",
+                                propagators[i] = new TimeTableOverloadCheckConstraint(
+                                        filtered_startingTimes_makespan,
+                                        filtered_endingTimes,
+                                        filtered_heights,
+                                        filtered_processingTimes,
+                                        data.capacities[i]));
+                        model.post(ttOverloadCheck);
+                        break;
+                    case TTHEOC:
+                        Constraint ttHEOverloadCheck = new Constraint("timetable horizontally elastic overload checker algorithm",
+                                propagators[i] = new TimeTableHorizontallyOverloadCheckConstraint(
+                                        filtered_startingTimes_makespan,
+                                        filtered_endingTimes,
+                                        filtered_heights,
+                                        filtered_processingTimes,
+                                        data.capacities[i]));
+                        model.post(ttHEOverloadCheck);
                         break;
                     default:
                         model.cumulative(filtered_tasks, filtered_heights_var, model.intVar("capacity", data.capacities[i]), false, Cumulative.Filter.TIME).post();

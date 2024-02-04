@@ -53,10 +53,11 @@ public class TimeTableHorizontallyElasticEdgeFinder {
 
 
 
-   public boolean TimeTable_Horizontally_OverloadCheck()
+   public boolean OverloadCheck()
    {
        InitializeIncrements(tasks_indices_lct.length - 1);
-       if(ScheduleTasks(tasks[tasks_indices_lct[tasks_indices_lct.length - 1]].latestCompletionTime(), C) > tasks[tasks_indices_lct[tasks_indices_lct.length - 1]].latestCompletionTime())
+       makespan = ScheduleTasks(tasks[tasks_indices_lct[tasks_indices_lct.length - 1]].latestCompletionTime(), C);
+       if(makespan > tasks[tasks_indices_lct[tasks_indices_lct.length - 1]].latestCompletionTime())
            return false;
 
        for(int i=tasks_indices_lct.length - 1; i>0; i--)

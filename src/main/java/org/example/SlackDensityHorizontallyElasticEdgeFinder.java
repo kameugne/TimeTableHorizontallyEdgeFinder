@@ -11,7 +11,6 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
     Integer[] Prec;
 
     Integer[] tasks_indices_lct;
-    Integer[] tasks_indices_lst;
     Integer[] tasks_indices_est;
     Integer[] tasks_indices_ect;
     Integer[] indexEst;
@@ -35,7 +34,6 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
 
 
         tasks_indices_lct = sortWithJavaLibrary(tasks, new Task.ComparatorByLct(tasks)); //Increasing LCT
-        tasks_indices_lst = sortWithJavaLibrary(tasks, new Task.ComparatorByLst(tasks)); //Increasing LST
         tasks_indices_est = sortWithJavaLibrary(tasks, new Task.ComparatorByEst(tasks)); //Increasing EST
         tasks_indices_ect = sortWithJavaLibrary(tasks, new Task.ComparatorByEct(tasks)); //Increasing ECT
 
@@ -46,10 +44,8 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
 
     public int[] Filter()
     {
-        int[] results;
         if(EdgeFinder_Detection()) {
-            results = EdgeFinder_Prunning();
-            return results;
+            return EdgeFinder_Prunning();
         } else {
             return null;
         }
@@ -349,16 +345,15 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
         tl.Add(new Timepoint(tasks[tasks_indices_est[0]].earliestStartingTime(), C));
         Timepoint t = tl.first;
 
-        int p,i,j,k,l;
-        p = i = j = k = l = 0;
+        int p,i,j,k;
+        p = i = j = k = 0;
 
         int maxLCT = Integer.MIN_VALUE;
 
-        while(i < n || j < n || k < n || l < n)
+        while(i < n || j < n || k < n)
         {
             if(i<n && (j == n || tasks[tasks_indices_est[i]].earliestStartingTime() <= tasks[tasks_indices_ect[j]].earliestCompletionTime()) &&
-                    (k == n || tasks[tasks_indices_est[i]].earliestStartingTime() <= tasks[tasks_indices_lct[k]].latestCompletionTime()) &&
-                    (l == n || tasks[tasks_indices_est[i]].earliestStartingTime() <= tasks[tasks_indices_lst[l]].latestStartingTime()))
+                    (k == n || tasks[tasks_indices_est[i]].earliestStartingTime() <= tasks[tasks_indices_lct[k]].latestCompletionTime()))
             {
                 if(tasks[tasks_indices_est[i]].earliestStartingTime() > t.time)
                 {
@@ -373,8 +368,7 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
 
                 i++;
             }
-            else if(j < n && (k==n || tasks[tasks_indices_ect[j]].earliestCompletionTime() <= tasks[tasks_indices_lct[k]].latestCompletionTime()) &&
-                    (l==n || tasks[tasks_indices_ect[j]].earliestCompletionTime() <= tasks[tasks_indices_lst[l]].latestStartingTime()))
+            else if(j < n && (k==n || tasks[tasks_indices_ect[j]].earliestCompletionTime() <= tasks[tasks_indices_lct[k]].latestCompletionTime()))
             {
                 if(tasks[tasks_indices_ect[j]].earliestCompletionTime() > t.time)
                 {
@@ -384,7 +378,7 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
                 tasks[tasks_indices_ect[j]].ect_to_timepoint = t;
                 j++;
             }
-            else if(k < n &&  (l == n || tasks[tasks_indices_lct[k]].latestCompletionTime() <= tasks[tasks_indices_lst[l]].latestStartingTime()))
+            else
             {
                 if(tasks[tasks_indices_lct[k]].latestCompletionTime() > t.time)
                 {
@@ -393,15 +387,6 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
                 }
                 tasks[tasks_indices_lct[k]].lct_to_timepoint = t;
                 k++;
-            }
-            else{
-                if(tasks[tasks_indices_lst[l]].latestStartingTime() > t.time)
-                {
-                    t.InsertAfter(new Timepoint(tasks[tasks_indices_lst[l]].latestStartingTime(), C));
-                    t = t.next;
-                }
-                tasks[tasks_indices_lst[l]].lst_to_timepoint = t;
-                l++;
             }
         }
         t.InsertAfter(new Timepoint(maxLCT + p, 0));
@@ -435,21 +420,6 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
 
                 t = tasks[tasks_indices_lct[i]].lct_to_timepoint;
                 t.incrementMax -= tasks[tasks_indices_lct[i]].height();
-            } else {
-                if (tasks[tasks_indices_lct[i]].id() != tasks[u].id() && tasks[tasks_indices_lct[i]].hasFixedPart() && tasks[tasks_indices_lct[i]].latestStartingTime() < tasks[tasks_indices_lct[maxIndex]].latestCompletionTime()) {
-                    t = tasks[tasks_indices_lct[i]].lst_to_timepoint;
-                    t.increment += tasks[tasks_indices_lct[i]].height();
-                    t.incrementMax += tasks[tasks_indices_lct[i]].height();
-                    if (tasks[tasks_indices_lct[i]].earliestCompletionTime() < tasks[tasks_indices_lct[maxIndex]].latestCompletionTime()) {
-                        t = tasks[tasks_indices_lct[i]].ect_to_timepoint;
-                        t.increment -= tasks[tasks_indices_lct[i]].height();
-                        t.incrementMax -= tasks[tasks_indices_lct[i]].height();
-                    } else {
-                        t = tasks[tasks_indices_lct[maxIndex]].lct_to_timepoint;
-                        t.increment -= tasks[tasks_indices_lct[i]].height();
-                        t.incrementMax -= tasks[tasks_indices_lct[i]].height();
-                    }
-                }
             }
         }
     }
@@ -483,21 +453,6 @@ public class SlackDensityHorizontallyElasticEdgeFinder {
 
                 t = tasks[tasks_indices_lct[i]].lct_to_timepoint;
                 t.incrementMax -= tasks[tasks_indices_lct[i]].height();
-            } else {
-                if (i != u && tasks[tasks_indices_lct[i]].hasFixedPart() && tasks[tasks_indices_lct[i]].latestStartingTime() < tasks[tasks_indices_lct[maxIndex]].latestCompletionTime()) {
-                    t = tasks[tasks_indices_lct[i]].lst_to_timepoint;
-                    t.increment += tasks[tasks_indices_lct[i]].height();
-                    t.incrementMax += tasks[tasks_indices_lct[i]].height();
-                    if (tasks[tasks_indices_lct[i]].earliestCompletionTime() < tasks[tasks_indices_lct[maxIndex]].latestCompletionTime()) {
-                        t = tasks[tasks_indices_lct[i]].ect_to_timepoint;
-                        t.increment -= tasks[tasks_indices_lct[i]].height();
-                        t.incrementMax -= tasks[tasks_indices_lct[i]].height();
-                    } else {
-                        t = tasks[tasks_indices_lct[maxIndex]].lct_to_timepoint;
-                        t.increment -= tasks[tasks_indices_lct[i]].height();
-                        t.incrementMax -= tasks[tasks_indices_lct[i]].height();
-                    }
-                }
             }
         }
         t = tasks[tasks_indices_lct[u]].est_to_timepoint;
