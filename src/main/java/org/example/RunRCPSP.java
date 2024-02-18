@@ -251,7 +251,7 @@ public class RunRCPSP {
         // switch to different search
         switch(search) {
             case staticSearch:
-                solver.setSearch(Search.intVarSearch(new StaticVarOrder(model), new IntDomainMin(), startingTimes_and_makespan));
+                solver.setSearch(Search.inputOrderLBSearch(startingTimes_and_makespan));
                 break;
             case dynamicSearchCOSDOWS:
                 solver.setSearch(Search.conflictOrderingSearch(Search.domOverWDegSearch(startingTimes_and_makespan)));
