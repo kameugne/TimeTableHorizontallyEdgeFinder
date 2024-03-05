@@ -2,7 +2,7 @@
 declare -a PROPConfig=("0")
 declare -a SEARCHConfig=("0")
 timeout=600
-problem="Static_TTHE_EF_rcpsp"  # TODO change the name of the problem
+problem="Last_TTHE_EF_rcpsp"  # TODO change the name of the problem
 # TODO put the path / command to launch the executable
 javaPath="/Library/Java/JavaVirtualMachines/jdk-17.0.2.jdk/Contents/Home/bin/java"
 launch_solver="java -Dfile.encoding=UTF-8 -jar 'out/artifacts/SDHEEF2024_jar/SDHEEF2024.jar'"
