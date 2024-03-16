@@ -263,7 +263,7 @@ public class RunRCPSP {
                 solver.setSearch(Search.conflictOrderingSearch(Search.minDomLBSearch(startingTimes_and_makespan)));
                 break;
             default:
-                solver.setSearch(Search.conflictOrderingSearch(Search.intVarSearch(new StaticVarOrder(model), new IntDomainMin(), startingTimes_and_makespan)));
+                solver.setSearch(Search.inputOrderLBSearch(startingTimes_and_makespan));
         }
         solver.setRestartOnSolutions();
         solver.limitTime(timeLimit * 1000);
